@@ -120,9 +120,9 @@
   </div>
 </template>
 
+
 <script>
-
-
+//暴露出去
 export default {
   name: 'app',
   
