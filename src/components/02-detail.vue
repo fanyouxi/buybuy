@@ -53,7 +53,7 @@
                                         <dd>
                                             <div id="buyButton" class="btn-buy">
                                                 <button onclick="cartAdd(this,'/',1,'/shopping.html');" class="buy">立即购买</button>
-                                                <button onclick="cartAdd(this,'/',0,'/cart.html');" class="add">加入购物车</button>
+                                                <button @click="add2Cart" class="add">加入购物车</button>
                                             </div>
                                         </dd>
                                     </dl>
@@ -84,18 +84,18 @@
                                         </div>
                                         <div class="conn-box">
                                             <div class="editor">
-                                                <textarea id="txtContent" name="txtContent" sucmsg=" " datatype="*10-1000" nullmsg="请填写评论内容！"></textarea>
+                                                <textarea id="txtContent" v-model.trim="comment" name="txtContent" sucmsg=" " datatype="*10-1000" nullmsg="请填写评论内容！"></textarea>
                                                 <span class="Validform_checktip"></span>
                                             </div>
                                             <div class="subcon">
-                                                <input id="btnSubmit" name="submit" type="submit" value="提交评论" class="submit">
+                                                <input id="btnSubmit" @click="submitComment" name="submit" type="submit" value="提交评论" class="submit">
                                                 <span class="Validform_checktip"></span>
                                             </div>
                                         </div>
                                     </div>
                                     <ul id="commentList" class="list-box">
                                         <p v-show="totalcount == 0" style="margin: 5px 0px 15px 69px; line-height: 42px; text-align: center; border: 1px solid rgb(247, 247, 247);">暂无评论，快来抢沙发吧！</p>
-                                        <li v-for="(item, index) in comments" :key="item.id">
+                                        <li v-for="(item,index) in comments" :key="item.id">
                                             <div class="avatar-box">
                                                 <i class="iconfont icon-user-full"></i>
                                             </div>
@@ -112,7 +112,7 @@
                                     </ul>
                                     <div class="page-box" style="margin: 5px 0px 0px 62px;">
                                         <!-- 使用iview做的分页 -->
-                                         <Page :total="totalcount" show-sizer show-elevator @on-change="pageChange" placement="top" :page-size-opts="[6,8,10]" :page-size="pageSize" />
+                                         <Page :total="totalcount" show-sizer show-elevator @on-page-size-change="sizeChange" :current="pageIndex" @on-change="pageChange" placement="top" :page-size-opts="[6,8,10]" :page-size="pageSize" />
                                     </div>
                                 </div>
                             </div>
@@ -190,7 +190,10 @@ export default {
       comments:[],
 
       //总评论数
-      totalcount:0
+      totalcount:0,
+
+      //发布评论
+      comment:''
 
     };
   },
@@ -217,7 +220,7 @@ export default {
       getComments(){
           axios.get(`http://111.230.232.110:8899/site/comment/getbypage/goods/${this.artID}?pageIndex=${this.pageIndex}&pageSize=${this.pageSize}`)
       .then(result =>{
-          console.log(result);
+        //   console.log(result);
           //评论内容
           this.comments = result.data.message;
           //总评论数
@@ -228,7 +231,53 @@ export default {
       pageChange(pageIndex){
         //   console.log(pageIndex);
         this.pageIndex = pageIndex;
+        // 获取评论
         this.getComments();        
+      },
+     //页容量改变
+      sizeChange(pageSize){
+          this.pageSize = pageSize;
+        //   获取评论
+          this.getComments();
+
+      },
+    //   提交评论
+      submitComment(){
+          //判断是否非空
+          if(this.comment == ''){
+            //   iview 视图 message全局提示
+              this.$Message.warning('内容不能为空,请输入内容');
+          }else{
+              // 内容
+              axios.post(`site/validate/comment/post/goods/${this.artID}`,{
+                  commenttxt:this.comment
+              }).then(result=>{
+                //   console.log(result);
+                  if(this.data.status == 0){
+                      this.$Message.success('this.data.message');
+                    //   清空
+                    this.commnet =''
+                    // 
+                    this.pageIndex = 1;
+                    // 获取评论
+                    this.getComments();
+                  }
+              })
+
+          }
+      },
+    //   加入购物车
+      add2Cart(){
+        //   获取商品id
+        // 获取商品数量
+        // 获取提交载荷
+        this.$store.commit("add2Cart",{
+            // 商品id
+            goodId:this.artID,
+            // 商品数量
+            goodNum:this.buyCount
+        })
+
       }   
   },
   //生命周期函数

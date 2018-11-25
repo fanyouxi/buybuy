@@ -11,7 +11,7 @@
         <div class="section">
             <div class="wrapper">
                 <div class="wrap-box">
-                    <!-- 分类类别 -->
+                    <!-- 分类列表 -->
                     <div class="left-220" style="margin: 0px;">
                         <div class="banner-nav">
                             <ul>
@@ -32,7 +32,7 @@
                                                 <a href="/goods/40.html">{{item.title}}</a>
                                             </dt>
                                             <dd>
-                                                <a v-for="(it, i) in itemsubcates" :key="it.id" href="/goods/43.html">{{it.title}}</a>
+                                                <a v-for="(it, i) in item.subcates" :key="it.id" href="/goods/43.html">{{it.title}}</a>
                                                
                                             </dd>
                                         </dl>
@@ -82,7 +82,9 @@
                             <li v-for="(item, index) in toplist" :key="item.id">
                                 <div class="img-box">
                                     <label>{{index+1}}</label>
+                                    <router-link to="/02-detail">
                                     <img :src="item.img_url">
+                                    </router-link>
                                 </div>
                                 <div class="txt-box">
                                     <a href="/goods/show-98.html">{{item.title}}</a>
