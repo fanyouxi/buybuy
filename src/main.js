@@ -29,9 +29,12 @@ axios.defaults.baseURL = 'http://111.230.232.110:8899/';
 
 //写组件
 import index from './components/index.vue'
-
 // 详情页
 import detail from './components/02-detail.vue'
+// 购物车详情页
+import shopCart from './components/03-shopCart.vue'
+// 地址注册
+import order from './components/04-order.vue'
 
 //写路由规则
 const routes = [{
@@ -45,6 +48,14 @@ const routes = [{
   {
     path: '/detail/:artID',
     component: detail
+  },
+  {
+    path: '/shopCart',
+    component: shopCart
+  },
+  {
+    path: '/order',
+    component: order
   },
 ]
 
@@ -145,6 +156,13 @@ const store = new Vuex.Store({
 
       }
       // console.log(state);
+
+    },
+    // 添加一个修改数据的方法
+    undateCartData(state,obj){
+      // console.log(obj);
+      state.cartData = obj;
+      
 
     }
   }

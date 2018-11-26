@@ -276,7 +276,15 @@ export default {
             goodId:this.artID,
             // 商品数量
             goodNum:this.buyCount
-        })
+        });
+        // 提示用户 element 通知框
+        this.$notify({
+          title: 'success',
+          message: '加入购物车成功',
+          type: 'success',
+        //  持续时间
+          duration:1000
+        });
 
       }   
   },
