@@ -285,7 +285,6 @@ export default {
         //  持续时间
           duration:1000
         });
-
       }   
   },
   //生命周期函数

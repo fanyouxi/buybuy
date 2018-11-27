@@ -59,10 +59,33 @@ const routes = [{
   },
 ]
 
-//初始化VueRouter
+//初始化VueRouter对象
 let router = new VueRouter({
   routes
 });
+
+// router导航守卫
+router.beforeEach((to, from, next) => {
+  // console.log("守卫了");
+  // console.log(to);
+  // console.log(from); 
+  if (to.path == "/order") {
+    // 正要去订单页
+    axios.get('site/account/islogin').then(result => {
+      // console.log(result);
+      // 必须先判断登录
+      if (result.data.code == "nologin") {
+        // 提示用户先登录
+        Vue.prototype.$Message.warning('请先登录');
+        // 跳转页面
+        router.push('/index')
+      }
+    })
+  } else {
+    // next()如果不执行,就会自动跳转
+    next();
+  }
+})
 // 注册全局过滤器 方便使用
 // 导入 moment
 import moment from "moment"
@@ -159,17 +182,17 @@ const store = new Vuex.Store({
 
     },
     // 添加一个修改数据的方法
-    undateCartData(state,obj){
+    undateCartData(state, obj) {
       // console.log(obj);
       state.cartData = obj;
-      
+
 
     }
   }
 })
 // 浏览器关闭保存数据
-window.onbeforeunload = function(){
-  window.localStorage.setItem('hm24',JSON.stringify(store.state.cartData))
+window.onbeforeunload = function () {
+  window.localStorage.setItem('hm24', JSON.stringify(store.state.cartData))
 }
 
 // vue实例化
